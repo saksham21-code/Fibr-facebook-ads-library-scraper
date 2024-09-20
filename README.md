@@ -54,8 +54,8 @@ When there are no ads found for a given search, the application provides a user-
 ## 8. Demo
 To see a demonstration of the project in action, check out the following videos:
 
-- [API Testing Demo](demo/api_testing.mp4)
-- [Frontend Testing Demo](demo/frontend_testing.mp4)
+- [API Testing Demo](demo/API_testing.mp4)
+- [Frontend Testing Demo](demo/front_end_testing.mp4)
 
 ## 9. Contact
 For any queries or issues, please contact:
