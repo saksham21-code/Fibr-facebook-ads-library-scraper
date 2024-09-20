@@ -189,7 +189,7 @@ public List<Ad> scrapeAds(String searchPhrase, String country, int pageNumber, i
     // firstly stores all the anchor tags ,Get the href attribute of the link.
     // Check if it's a Facebook link or Instagram link
     // Check if it's a profile link.
-private Map<String, String> extractSocialMediaLinks(WebElement adElement) {
+    private Map<String, String> extractSocialMediaLinks(WebElement adElement) {
     List<WebElement> links = adElement.findElements(By.tagName("a")); 
     String facebookLink = null; 
     String instagramLink = null; 
@@ -213,8 +213,8 @@ private Map<String, String> extractSocialMediaLinks(WebElement adElement) {
     return socialMediaLinks; 
 }
 //// If the link doesn't contain "posts", "photos", or "videos", it's considered a profile link.
-private boolean isProfileLink(String href) {
-    return !href.contains("/posts/") && !href.contains("/photos/") && !href.contains("/videos/");
+   private boolean isProfileLink(String href) {
+       return !href.contains("/posts/") && !href.contains("/photos/") && !href.contains("/videos/");
 }
 
         
