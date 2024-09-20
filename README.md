@@ -51,7 +51,13 @@ When there are no ads found for a given search, the application provides a user-
 ## 7. Caching Mechanism
 - The application uses a simple caching mechanism to store previously fetched ads in the frontend state. This prevents redundant API calls when users navigate back and forth between pages.
 
-## 8. Contact
+## 8. Demo
+To see a demonstration of the project in action, check out the following videos:
+
+- [API Testing Demo](demo/api_testing.mp4)
+- [Frontend Testing Demo](demo/frontend_testing.mp4)
+
+## 9. Contact
 For any queries or issues, please contact:
 
 - **Name:** Saksham Tiwari
