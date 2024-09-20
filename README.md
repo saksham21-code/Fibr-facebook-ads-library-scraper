@@ -1,5 +1,3 @@
-# Fibr-facebook-ads-library-scraper
-
 
 # Facebook Ads Scraper
 
@@ -14,34 +12,34 @@ This project is a web application designed to scrape ads from the Facebook Ads L
 Here are some sample API responses from the Facebook Ads Scraper API:
 
 ### API Endpoint
-![API URL](/mnt/data/api_url.png)
+![API URL](Fibr-facebook-ads-library-scraper/images/api_url.png)
 
 ### API Response 1
-![API Response 1](/mnt/data/api_response_1.png)
+![API Response 1](Fibr-facebook-ads-library-scraper/images/api_response_1.png)
 
 ### API Response 2
-![API Response 2](/mnt/data/api_response_2.png)
+![API Response 2](Fibr-facebook-ads-library-scraper/images/api_response_2.png)
 
 ## 4. Frontend Screenshots
 The following images showcase the frontend UI in both light and dark themes.
 
 ### Search Page - Light Theme
-![Search Page Light Theme](/mnt/data/search_page_light_theme.png)
+![Search Page Light Theme](Fibr-facebook-ads-library-scraper/images/search_page_light_theme.png)
 
 ### Search Page - Dark Theme
-![Search Page Dark Theme](/mnt/data/search_page_dark_theme.png)
+![Search Page Dark Theme](Fibr-facebook-ads-library-scraper/images/search_page_dark_theme.png)
 
 ### Result Page - Light Theme
-![Result Page Light Theme](/mnt/data/result_page_light_theme.png)
+![Result Page Light Theme](Fibr-facebook-ads-library-scraper/images/result_page_light_theme.png)
 
 ### Result Page - Dark Theme
-![Result Page Dark Theme](/mnt/data/result_page_dark_theme.png)
+![Result Page Dark Theme](Fibr-facebook-ads-library-scraper/images/result_page_dark_theme.png)
 
 ## 5. Error Handling
 When there are no ads found for a given search, the application provides a user-friendly error message:
 
 ### No Ads Found
-![Error Handling](/mnt/data/error_handling.png)
+![Error Handling](Fibr-facebook-ads-library-scraper/images/error_handling.png)
 
 ## 6. Application Flow
 1. **User Input:** Users enter a search phrase and select a country on the search page.
@@ -59,4 +57,3 @@ For any queries or issues, please contact:
 - **Name:** Saksham Tiwari
 - **Email:** saksham@example.com
 - **GitHub:** [sakshamtwr](https://github.com/sakshamtwr)
-
