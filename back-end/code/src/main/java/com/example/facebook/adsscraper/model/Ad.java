@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Represents an advertisement scraped from the Facebook Ads Library.
- */
+
 @Getter
 @Setter
 @AllArgsConstructor
