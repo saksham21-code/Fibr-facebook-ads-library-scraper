@@ -83,7 +83,7 @@ public List<Ad> scrapeAds(String searchPhrase, String country, int pageNumber, i
             Thread.sleep(2000); // Waits for 2 seconds to load.
             long newHeight = (long) js.executeScript("return document.body.scrollHeight"); // Gets the new scroll height.
             if (newHeight == lastHeight) { 
-                break;
+                break;     // handles hasMore attribute making sure you do not continue further.
             }
             lastHeight = newHeight; 
 
