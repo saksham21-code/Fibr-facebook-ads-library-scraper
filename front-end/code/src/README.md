@@ -1,1 +1,1 @@
-## front end pages : searchpage.js and resultspage.js
+## front end pages : SearchPage.js and ResultsPage.js
