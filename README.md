@@ -14,10 +14,10 @@ Here are some sample API responses from the Facebook Ads Scraper API:
 ### API Endpoint
 ![API URL](images/api_url.png)
 
-### API Response 1
+### API Response 
 ![API Response 1](images/api_response_1.png)
 
-### API Response 2
+### API Response (with hasMore and pageNumber attribute)
 ![API Response 2](images/api_response_2.png)
 
 ## 4. Frontend Screenshots
