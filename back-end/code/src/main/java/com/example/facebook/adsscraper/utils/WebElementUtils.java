@@ -13,7 +13,7 @@ import java.util.Map;
 public class WebElementUtils {
     private static final Logger log = LoggerFactory.getLogger(WebElementUtils.class);
 
-    // Extracts text from a WebElement using the provided XPath
+    // Extracts text using the provided XPath
     public static String extractText(WebElement element, String xpath) {
         try {
             return element.findElement(By.xpath(xpath)).getText();
@@ -23,7 +23,7 @@ public class WebElementUtils {
         }
     }
 
-    // Extracts attribute value from a WebElement using the provided XPath and attribute name
+    // Extracts attribute value using the provided XPath and attribute name
     public static String extractAttribute(WebElement element, String xpath, String attribute) {
         try {
             return element.findElement(By.xpath(xpath)).getAttribute(attribute);
@@ -33,7 +33,7 @@ public class WebElementUtils {
         }
     }
 
-    // Extracts social media links (Facebook and Instagram) from an ad element
+    // Extracts social media links 
     public static Map<String, String> extractSocialMediaLinks(WebElement adElement) {
         List<WebElement> links = adElement.findElements(By.tagName("a"));
         String facebookLink = null;
@@ -69,7 +69,7 @@ public class WebElementUtils {
         return descriptionLines.length > 0 ? descriptionLines[0] : "";
     }
 
-    // Extracts the media URL (Image or Video) from an ad element
+    // Extracts the media URL 
     public static String extractMediaUrl(WebElement adElement, String xpathMediaImage, String xpathMediaVideo) {
         try {
             return extractAttribute(adElement, xpathMediaImage, "src");
