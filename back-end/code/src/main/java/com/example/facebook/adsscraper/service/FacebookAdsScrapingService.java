@@ -1,6 +1,8 @@
 package com.example.facebook.adsscraper.service;
 
 import com.example.facebook.adsscraper.model.Ad;
+import com.example.facebook.adsscraper.utils.WebElementUtils;
+import com.example.facebook.adsscraper.utils.XPathUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
@@ -19,9 +21,6 @@ import java.util.*;
 public class FacebookAdsScrapingService {
 
     // Injecting property values from application.properties
-    @Value("${webdriver.browser.path}")
-    private String webDriverPath;
-
     @Value("${facebook.ads.library.url}")
     private String facebookAdsLibraryUrl;
 
@@ -61,7 +60,7 @@ public class FacebookAdsScrapingService {
     @Value("${xpath.media.video}")
     private String xpathMediaVideo;
 
-    // map stores the processed ads
+    // Map stores the processed ads
     private Map<String, Set<String>> processedAdsMap = new HashMap<>();
 
     /*
@@ -69,10 +68,10 @@ public class FacebookAdsScrapingService {
      * @return A list of ads scraped from the Facebook Ads Library.
      */
     public List<Ad> scrapeAds(String searchPhrase, String country, int pageNumber, int pageSize) {
-        WebDriver driver = null; // WebDriver object { automation } 
-        List<Ad> adsList = new ArrayList<>(); // List of ads.
+        WebDriver driver = null; // WebDriver object for automation
+        List<Ad> adsList = new ArrayList<>(); // List to store scraped ads
 
-        // create a key on phrase and country to track the processing
+        // Create a key based on phrase and country to track the processing
         String key = searchPhrase.toLowerCase() + "-" + country.toLowerCase();
         Set<String> processedLibraryIds = processedAdsMap.getOrDefault(key, new HashSet<>());
 
@@ -84,8 +83,8 @@ public class FacebookAdsScrapingService {
             WebDriverManager.firefoxdriver().setup(); 
             FirefoxOptions options = new FirefoxOptions(); 
             driver = new FirefoxDriver(options); 
-            driver.get(facebookAdsLibraryUrl); // Opens page.
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50)); // Waits to 50 seconds.
+            driver.get(facebookAdsLibraryUrl); // Opens the Facebook Ads Library page
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(50)); // Waits for 50 seconds.
 
             /* 
              * Step 2: Select the country, by typing it, select all ads, enter phrase, hit enter.
@@ -94,14 +93,14 @@ public class FacebookAdsScrapingService {
 
             /* 
              * Step 3: Wait for the ads to load, handle pagination by scrolling.
-             *    get the initial scroll height.
+             * Get the initial scroll height.
              */
             JavascriptExecutor js = (JavascriptExecutor) driver;
             long lastHeight = (long) js.executeScript("return document.body.scrollHeight");
 
             // Step 4: Calculate the number of ads to skip based on the page number, continue scrolling till ads are loaded.
             // If no more ads are loaded, break the loop.
-            // Updates number of loaded ads.
+            // Updates the number of loaded ads.
             int adsToSkip = (pageNumber - 1) * pageSize;
             int totalAdsLoaded = 0;
 
@@ -110,7 +109,7 @@ public class FacebookAdsScrapingService {
                 Thread.sleep(2000); // Waits for 2 seconds to load.
                 long newHeight = (long) js.executeScript("return document.body.scrollHeight"); // Gets the new scroll height.
                 if (newHeight == lastHeight) { 
-                    break;     // handles hasMore attribute making sure you do not continue further.
+                    break; // Break if no new ads are loaded.
                 }
                 lastHeight = newHeight; 
 
@@ -122,7 +121,7 @@ public class FacebookAdsScrapingService {
 
                 // Step 5: Loop through each ad container
                 // Skip ads based on the page number.
-                // Stop only if the required no. is loaded.
+                // Stop only if the required number is loaded.
                 for (WebElement adElement : ads) { 
                     if (adsToSkip > 0) { 
                         adsToSkip--;
@@ -132,32 +131,32 @@ public class FacebookAdsScrapingService {
 
                     /* 
                      * Step 6: Extract ad details like Library ID, account name, description, title, and media.
-                     *    we are collecting the unique identifier i.e Library ID first.   
-                     *   If the ad is already processed, skip it IF NOT add Library ID to the processed set.
+                     * We are collecting the unique identifier i.e Library ID first.   
+                     * If the ad is already processed, skip it; if not, add Library ID to the processed set.
                      */
                     try {
-                        String libraryId = extractLibraryId(adElement);
+                        String libraryId = WebElementUtils.extractText(adElement, xpathLibraryId);
                         if (libraryId.isEmpty() || processedLibraryIds.contains(libraryId)) {
                             continue;
                         }
                         processedLibraryIds.add(libraryId); 
 
-                        // name extraction
-                        String accountName = extractAccountName(adElement);
+                        // Extract account name
+                        String accountName = WebElementUtils.extractText(adElement, xpathAccountName);
 
-                        // description and title extraction
-                        String description = extractDescription(adElement);
-                        String title = extractTitleFromDescription(description);
+                        // Extract description and title
+                        String description = WebElementUtils.extractText(adElement, xpathDescription);
+                        String title = WebElementUtils.extractTitleFromDescription(description);
 
-                        // media URL (image or video) extraction
-                        String mediaUrl = extractMediaUrl(adElement);
+                        // Extract media URL (image or video)
+                        String mediaUrl = WebElementUtils.extractMediaUrl(adElement, xpathMediaImage, xpathMediaVideo);
 
-                        // social media links (Facebook and Instagram profile) extraction
-                        Map<String, String> socialMediaLinks = extractSocialMediaLinks(adElement); 
+                        // Extract social media links (Facebook and Instagram profile)
+                        Map<String, String> socialMediaLinks = WebElementUtils.extractSocialMediaLinks(adElement); 
                         String fbLink = socialMediaLinks.get("facebook"); 
                         String igLink = socialMediaLinks.get("instagram"); 
 
-                        // till now extracted all information to be stored in the Ad model class
+                        // Store extracted information in the Ad model class
                         Ad ad = new Ad(title, description, mediaUrl, accountName, libraryId, fbLink, igLink);
                         adsList.add(ad);
 
@@ -191,7 +190,7 @@ public class FacebookAdsScrapingService {
             WebElement searchCountryInput = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathCountrySearchInput))); // Waits for the search input to be clickable.
             searchCountryInput.sendKeys(country); 
             searchCountryInput.sendKeys(Keys.ENTER); 
-            WebElement countryOption = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathCountryOptionPrefix + country + "']"))); // Waits for the country option to appear.
+            WebElement countryOption = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(XPathUtils.getCountryOptionXPath(country)))); // Waits for the country option to appear.
             countryOption.click(); 
             WebElement adCategoryDropdown = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathAdCategoryDropdown))); // Waits for the ad category dropdown.
             adCategoryDropdown.click(); 
@@ -203,86 +202,5 @@ public class FacebookAdsScrapingService {
         } catch (Exception e) {
             log.error("Error selecting country and searching ads: {}", e.getMessage(), e);
         }
-    }
-
-    // Helper method to extract Library ID.
-    private String extractLibraryId(WebElement adElement) {
-        try {
-            return adElement.findElement(By.xpath(xpathLibraryId)).getText(); 
-        } catch (NoSuchElementException e) { 
-            return ""; 
-        }
-    }
-
-    // Helper method to extract Account Name.
-    private String extractAccountName(WebElement adElement) {
-        try {
-            return adElement.findElement(By.xpath(xpathAccountName)).getText(); 
-        } catch (NoSuchElementException e) { 
-            log.warn("Account name not found for ad."); 
-            return "Unknown"; 
-        }
-    }
-
-    // Helper method to extract Description.
-    private String extractDescription(WebElement adElement) {
-        try {
-            WebElement descriptionElement = adElement.findElement(By.xpath(xpathDescription)); 
-            String description = descriptionElement.getAttribute("innerHTML").replace("<br>", "\n"); 
-            return description.replaceAll("\\<.*?\\>", ""); 
-        } catch (NoSuchElementException e) { 
-            log.warn("Description not found for ad."); 
-            return ""; 
-        }
-    }
-
-    // Helper method to extract Title from Description.
-    private String extractTitleFromDescription(String description) {
-        String[] descriptionLines = description.split("\n"); 
-        return descriptionLines.length > 0 ? descriptionLines[0] : ""; 
-    }
-
-    // Helper method to extract Media URL (Image or Video).
-    private String extractMediaUrl(WebElement adElement) {
-        try {
-            return adElement.findElement(By.xpath(xpathMediaImage)).getAttribute("src"); 
-        } catch (NoSuchElementException imgEx) { 
-            try {
-                return adElement.findElement(By.xpath(xpathMediaVideo)).getAttribute("src");
-            } catch (NoSuchElementException vidEx) { 
-                log.warn("No media (image or video) found for ad."); 
-                return ""; 
-            }
-        }
-    }
-
-    // Helper method to extract the social links (Facebook and Instagram).
-    private Map<String, String> extractSocialMediaLinks(WebElement adElement) {
-        List<WebElement> links = adElement.findElements(By.tagName("a")); 
-        String facebookLink = null; 
-        String instagramLink = null; 
-        for (WebElement link : links) { 
-            String href = link.getAttribute("href");
-            if (href.contains("facebook.com") && facebookLink == null) { 
-                if (isProfileLink(href)) { 
-                    facebookLink = href; 
-                }
-            } else if (href.contains("instagram.com") && instagramLink == null) { 
-                if (isProfileLink(href)) { 
-                    instagramLink = href; 
-                }
-            }
-        }
-
-        Map<String, String> socialMediaLinks = new HashMap<>(); 
-        socialMediaLinks.put("facebook", facebookLink); 
-        socialMediaLinks.put("instagram", instagramLink); 
-
-        return socialMediaLinks; 
-    }
-
-    // If the link doesn't contain "posts", "photos", or "videos", it's considered a profile link.
-    private boolean isProfileLink(String href) {
-        return !href.contains("/posts/") && !href.contains("/photos/") && !href.contains("/videos/");
     }
 }
