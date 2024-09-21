@@ -45,9 +45,14 @@ facebook-adsscraper-backend/
 │   ├── service/
 │   │   └── FacebookAdsScrapingService.java       # Service containing scraping logic
 │   │
+│   ├── utils/                                    # Utility package for helper methods
+│   │   ├── WebElementUtils.java                  # Utility methods for WebElement extraction
+│   │   └── XPathUtils.java                       # Utility methods for constructing XPaths
+│   │
 │   └── Application.java                          # Main entry point of the Spring Boot application
 │
 └── pom.xml                                       # Maven configuration file
+
 ```
 
 ## Setup and Installation
